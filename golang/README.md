@@ -31,8 +31,8 @@ go mod init
 以下のGetとSetのインターフェイスを持った簡易なKVSを作成してください。
 ```go
 type DB interface {
-	Get(key []byte) (value []byte, err error)
-	Set(key, value []byte) error
+	Get(key string) (value string, err error)
+	Set(key, value string) error
 }
 ```
 
