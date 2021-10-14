@@ -1,0 +1,76 @@
+""" ToDo """
+type Todo {
+  """ ToDoのID """
+  todoID: ID!
+  """ ToDoのテキスト """
+  text: String!
+  """ 完了したかどうか """
+  done: Boolean!
+  """ ユーザ """
+  user: User!
+}
+
+""" ユーザ """
+type User {
+  """ ユーザ名 """
+  name: ID!
+}
+
+type Query {
+
+  """ ログインしてるユーザのToDOを取得 """
+  todos: [Todo!]!
+}
+
+""" 認証完了後のデータ """
+type AuthenticatePayload {
+  """ ユーザ名 """
+  userName: ID!
+  """ Json Web Token """
+  jwt: String!
+}
+
+""" ToDoを作成するためのinput """
+input NewTodo {
+  """ ToDoのテキスト """
+  text: String!
+  """ ユーザ名 """
+  userName: String!
+}
+
+""" ユーザを作成するためのinput """
+input NewUser {
+  """ ユニークなユーザ名 """
+  name: String!
+  """ パスワード """
+  password: String!
+}
+
+""" 認証するためのinput """
+input AuthenticateInput {
+  """ ユーザ名 """
+  name: String!
+  """ パスワード """
+  password: String!
+}
+
+""" ToDoを完了するためのInput """
+input DoneTodo {
+  """ ToDoのID """
+  todoID: ID!
+}
+
+type Mutation {
+
+  """ ToDo作成 """
+  createTodo(input: NewTodo!): Todo!
+
+  """ ToDo完了 """
+  doneTodo(input: DoneTodo!): Todo!
+
+  """ ユーザ作成 """
+  createUser(input: NewUser!): AuthenticatePayload!
+
+  """ 認証 """
+  authenticate(input: AuthenticateInput!): AuthenticatePayload!
+}
