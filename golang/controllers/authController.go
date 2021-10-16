@@ -8,7 +8,6 @@ import (
 	"trunk_exem/employment_examination/golang/models"
 )
 
-
 func CreateUser(c *gin.Context) {
 	var reqBody map[string]string
 	c.Bind(&reqBody)
@@ -20,7 +19,7 @@ func CreateUser(c *gin.Context) {
 		Email: reqBody["email"],
 	}
 	user.SetPassword(reqBody["password"])
-	database.DB =append(database.DB,user)
+	database.DB = append(database.DB, user)
 
 	c.JSON(200, gin.H{
 		"message": database.DB,
@@ -35,8 +34,8 @@ func LoginUser(c *gin.Context) {
 		if database.DB[i].Email == reqBody["email"] {
 
 			if err := database.DB[i].ComparePassword(reqBody["password"]); err != nil {
-				c.JSON(400,gin.H{
-				"message":"miss",
+				c.JSON(400, gin.H{
+					"message": "miss",
 				})
 				return
 			}
