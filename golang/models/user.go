@@ -1,6 +1,8 @@
 package models
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 type User struct {
 	Id       string `json:"id"`
@@ -16,4 +18,9 @@ func (user *User) SetPassword(password string) {
 func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 
+}
+
+type DB interface {
+	Get(key string) (value string, err error)
+	Set(key, value string) error
 }
