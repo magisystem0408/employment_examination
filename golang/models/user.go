@@ -19,8 +19,3 @@ func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 
 }
-
-type DB interface {
-	Get(key string) (value string, err error)
-	Set(key, value string) error
-}
