@@ -3,58 +3,40 @@ package controllers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"trunk_exem/employment_examination/golang/database"
-	"trunk_exem/employment_examination/golang/models"
 )
 
 func CreateUser(c *gin.Context) {
 	var reqBody map[string]string
 	c.Bind(&reqBody)
-
-	fmt.Println(reqBody)
-
-	user := models.User{
-		Id:    uuid.New().String(),
-		Email: reqBody["email"],
+	user := database.User{Email: reqBody["email"]}
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(reqBody["password"]), 14)
+	user.Password = string(hashedPassword)
+	if nil != user.Set(user.Email, user.Password) {
+		fmt.Errorf("データベースに登録できませんでした。")
 	}
-	user.SetPassword(reqBody["password"])
-	database.DB = append(database.DB, user)
 
 	c.JSON(200, gin.H{
-		"message": database.DB,
+		"message": "登録が完了しました。",
 	})
+
 }
 
 func LoginUser(c *gin.Context) {
 	var reqBody map[string]string
 	c.Bind(&reqBody)
-
-	for i := range database.DB {
-		if database.DB[i].Email == reqBody["email"] {
-
-			if err := database.DB[i].ComparePassword(reqBody["password"]); err != nil {
-				c.JSON(400, gin.H{
-					"message": "miss",
-				})
-				return
-			}
-
-			c.JSON(200, gin.H{
-				"message": "ok!",
-			})
-			return
-		}
+	user := database.User{Email: reqBody["email"], Password: reqBody["password"]}
+	password, _ := user.Get(user.Email)
+	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(user.Password))
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "正しくありません。",
+		})
+		return
 	}
-	c.JSON(404, gin.H{
-		"error":   true,
-		"message": "invalid",
-	})
-}
-
-func GetUser(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"massage": database.DB,
+		"message": "ok!",
 	})
 
 }

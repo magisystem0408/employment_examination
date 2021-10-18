@@ -10,7 +10,6 @@ func Setup(app *gin.Engine) {
 
 	userRoutes := app.Group("/users")
 	{
-		userRoutes.GET("/", controllers.GetUser)
 		userRoutes.POST("/register", controllers.CreateUser)
 		userRoutes.POST("/login", controllers.LoginUser)
 	}
